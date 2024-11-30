@@ -40,7 +40,7 @@ function Login() {
         } catch (error) {
             // Maneja errores de autenticación
             if (error.response && error.response.status === 401) {
-                setMessage('Credenciales inválidas');
+                setMessage('Credenciales fallidas');
             } else {
                 setMessage('Error al iniciar sesión');
             }
