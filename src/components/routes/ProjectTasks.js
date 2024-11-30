@@ -61,7 +61,7 @@ function ProjectTasks() {
       .catch((error) => {
         console.error('Error al obtener tareas del proyecto', error);
       });
-  }, [projectId, user.user_id, userRole, users]);
+  }, [API_URL, projectId, user.user_id, userRole, users]);
 
   const fetchEpics = useCallback(() => {
     // Obtener las épicas del proyecto
@@ -73,7 +73,7 @@ function ProjectTasks() {
       .catch((error) => {
         console.error('Error al obtener las épicas del proyecto', error);
       });
-  }, [projectId]);
+  }, [API_URL, projectId]);
 
   const fetchTaskStates = useCallback(() => {
     axios
@@ -92,7 +92,7 @@ function ProjectTasks() {
       .catch((error) => {
         console.error('Error al obtener los estados de las tareas', error);
       });
-  }, []);
+  }, [API_URL]);
 
   const organizeTasksByState = useCallback((tasks) => {
     const tasksByStateTemp = {};
@@ -121,7 +121,7 @@ function ProjectTasks() {
       .catch((error) => {
         console.error('Error al obtener la lista de usuarios', error);
       });
-  }, []);
+  }, [API_URL]);
 
 
   useEffect(() => {

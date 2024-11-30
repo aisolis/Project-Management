@@ -1,6 +1,6 @@
 // src/ManageUsers.js
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -21,16 +21,8 @@ function ManageUsers() {
   const userRole = user.role;
   const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
 
-  useEffect(() => {
-    if (userRole !== 'ADMIN') {
-      // Si el usuario no es ADMIN, lo redirigimos al dashboard
-      navigate('/dashboard');
-    } else {
-      fetchUsers();
-    }
-  }, [userRole, navigate]);
 
-  const fetchUsers = () => {
+  const fetchUsers = useCallback(() => {
     axios
       .get(`${API_URL}/api/users`)
       .then((response) => {
@@ -39,7 +31,16 @@ function ManageUsers() {
       .catch((error) => {
         console.error('Error al obtener los usuarios', error);
       });
-  };
+  }, [API_URL]);
+
+  useEffect(() => {
+    if (userRole !== 'ADMIN') {
+      // Si el usuario no es ADMIN, lo redirigimos al dashboard
+      navigate('/dashboard');
+    } else {
+      fetchUsers();
+    }
+  }, [userRole, navigate, fetchUsers]);
 
   const handleChange = (e) => {
     setNewUserData({

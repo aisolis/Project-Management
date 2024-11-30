@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -17,16 +17,8 @@ function ManageProjects() {
   const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
 
 
-  useEffect(() => {
-    if (userRole !== 'ADMIN') {
-      // Si el usuario no es ADMIN, lo redirigimos al dashboard
-      navigate('/dashboard');
-    } else {
-      fetchProjects();
-    }
-  }, [userRole, navigate]);
 
-  const fetchProjects = () => {
+  const fetchProjects = useCallback(() => {
     axios
       .get(`${API_URL}/api/projects`)
       .then((response) => {
@@ -35,7 +27,17 @@ function ManageProjects() {
       .catch((error) => {
         console.error('Error al obtener los proyectos', error);
       });
-  };
+  }, [API_URL]);
+
+  useEffect(() => {
+    if (userRole !== 'ADMIN') {
+      // Si el usuario no es ADMIN, lo redirigimos al dashboard
+      navigate('/dashboard');
+    } else {
+      fetchProjects();
+    }
+  }, [userRole, navigate, fetchProjects]);
+
 
   const handleChange = (e) => {
     setNewProjectData({

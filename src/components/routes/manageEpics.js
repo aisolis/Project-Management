@@ -1,6 +1,6 @@
 // src/ManageEpics.js
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -20,17 +20,7 @@ function ManageEpics() {
   const userRole = user.role;
   const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
 
-  useEffect(() => {
-    if (userRole !== 'ADMIN') {
-      // Si el usuario no es ADMIN, lo redirigimos al dashboard
-      navigate('/dashboard');
-    } else {
-      fetchEpics();
-      fetchProjects();
-    }
-  }, [userRole, navigate, API_URL]);
-
-  const fetchEpics = () => {
+  const fetchEpics = useCallback(() => {
     axios
       .get(`${API_URL}/api/epics`)
       .then((response) => {
@@ -39,9 +29,9 @@ function ManageEpics() {
       .catch((error) => {
         console.error('Error al obtener las épicas', error);
       });
-  };
+  }, [API_URL]);
 
-  const fetchProjects = () => {
+  const fetchProjects = useCallback(() => {
     axios
       .get(`${API_URL}/api/projects`)
       .then((response) => {
@@ -50,7 +40,18 @@ function ManageEpics() {
       .catch((error) => {
         console.error('Error al obtener proyectos', error);
       });
-  };
+  }, [API_URL]);
+
+
+  useEffect(() => {
+    if (userRole !== 'ADMIN') {
+      // Si el usuario no es ADMIN, lo redirigimos al dashboard
+      navigate('/dashboard');
+    } else {
+      fetchEpics();
+      fetchProjects();
+    }
+  }, [userRole, navigate, API_URL, fetchEpics, fetchProjects]);
 
   const handleChange = (e) => {
     setNewEpicData({
