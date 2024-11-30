@@ -26,12 +26,13 @@ function ProjectTasks() {
   const userRole = user.role;
   const [users, setUsers] = useState([]);
   const [taskToDelete, setTaskToDelete] = useState(null);
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
 
 
   const fetchTasks = useCallback(() => {
     // Obtener las tareas asignadas al usuario en el proyecto
     axios
-      .get(`http://localhost:4000/api/projects/${projectId}/tasks`)
+      .get(`${API_URL}/api/projects/${projectId}/tasks`)
       .then((response) => {
         let tasksData = response.data;
 
@@ -65,7 +66,7 @@ function ProjectTasks() {
   const fetchEpics = useCallback(() => {
     // Obtener las épicas del proyecto
     axios
-      .get(`http://localhost:4000/api/projects/${projectId}/epics`)
+      .get(`${API_URL}/api/projects/${projectId}/epics`)
       .then((response) => {
         setEpics(response.data);
       })
@@ -76,7 +77,7 @@ function ProjectTasks() {
 
   const fetchTaskStates = useCallback(() => {
     axios
-      .get('http://localhost:4000/api/task-states')
+      .get(`${API_URL}/api/task-states`)
       .then((response) => {
         // Ordenamos los estados según 'state_order' si es necesario
         const sortedStates = response.data.sort((a, b) => a.state_order - b.state_order);
@@ -113,7 +114,7 @@ function ProjectTasks() {
 
   const fetchUsers = useCallback(() => {
     axios
-      .get('http://localhost:4000/api/users')
+      .get(`${API_URL}/api/users`)
       .then((response) => {
         setUsers(response.data);
       })
@@ -163,7 +164,7 @@ function ProjectTasks() {
     }
   
     axios
-      .put(`http://localhost:4000/api/tasks/${taskId}/change-state/${newStateId}`)
+      .put(`${API_URL}/api/tasks/${taskId}/change-state/${newStateId}`)
       .then(() => {
         // Actualizamos las tareas localmente
         fetchTasks();
@@ -230,7 +231,7 @@ function ProjectTasks() {
 
     // Crear una nueva tarea asociada al proyecto actual
     axios
-      .post(`http://localhost:4000/api/tasks/project/${projectId}`, {
+      .post(`${API_URL}/api/tasks/project/${projectId}`, {
         ...newTaskData,
         due_date: newTaskData.due_date || null,
         epic_id: newTaskData.epic_id || null,
@@ -247,7 +248,7 @@ function ProjectTasks() {
         }
 
         const assignPromises = assignedUsers.map((userId) => {
-            return axios.post(`http://localhost:4000/api/tasks/${taskId}/assign/${userId}`);
+            return axios.post(`${API_URL}/api/tasks/${taskId}/assign/${userId}`);
           });
     
         Promise.all(assignPromises)
@@ -285,7 +286,7 @@ function ProjectTasks() {
 
   const confirmDeleteTask = (taskId) => {
     axios
-    .delete(`http://localhost:4000/api/tasks/${taskToDelete.task_id}`)
+    .delete(`${API_URL}/api/tasks/${taskToDelete.task_id}`)
     .then(() => {
         fetchTasks();
         cancelDeleteTask();
@@ -305,7 +306,7 @@ function ProjectTasks() {
 
     // Actualizar la tarea
     axios
-      .put(`http://localhost:4000/api/tasks/${editTaskData.task_id}`, {
+      .put(`${API_URL}/api/tasks/${editTaskData.task_id}`, {
         task_title: editTaskData.task_title,
         task_description: editTaskData.task_description,
         due_date: editTaskData.due_date || null,
@@ -317,11 +318,11 @@ function ProjectTasks() {
     
             // Primero, desasignamos todos los usuarios actuales
             axios
-              .delete(`http://localhost:4000/api/tasks/${taskId}/unassign-all`)
+              .delete(`${API_URL}/api/tasks/${taskId}/unassign-all`)
               .then(() => {
                 // Asignamos los nuevos usuarios seleccionados haciendo múltiples llamadas
                 const assignPromises = editTaskData.assigned_users.map((userId) => {
-                  return axios.post(`http://localhost:4000/api/tasks/${taskId}/assign/${userId}`);
+                  return axios.post(`${API_URL}/api/tasks/${taskId}/assign/${userId}`);
                 });
     
                 Promise.all(assignPromises)

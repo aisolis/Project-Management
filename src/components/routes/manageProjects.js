@@ -14,6 +14,8 @@ function ManageProjects() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
   const userRole = user.role;
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+
 
   useEffect(() => {
     if (userRole !== 'ADMIN') {
@@ -26,7 +28,7 @@ function ManageProjects() {
 
   const fetchProjects = () => {
     axios
-      .get('http://localhost:4000/api/projects')
+      .get(`${API_URL}/api/projects`)
       .then((response) => {
         setProjects(response.data);
       })
@@ -46,7 +48,7 @@ function ManageProjects() {
     e.preventDefault();
 
     axios
-      .post('http://localhost:4000/api/projects', newProjectData)
+      .post(`${API_URL}/api/projects`, newProjectData)
       .then(() => {
         fetchProjects();
         setNewProjectData({
@@ -66,7 +68,7 @@ function ManageProjects() {
 
   const confirmDeleteProject = () => {
     axios
-      .delete(`http://localhost:4000/api/projects/${projectToDelete}`)
+      .delete(`${API_URL}/api/projects/${projectToDelete}`)
       .then(() => {
         fetchProjects();
         setProjectToDelete(null);
@@ -95,7 +97,7 @@ function ManageProjects() {
     e.preventDefault();
 
     axios
-      .put(`http://localhost:4000/api/projects/${editProjectData.project_id}`, editProjectData)
+      .put(`${API_URL}/api/projects/${editProjectData.project_id}`, editProjectData)
       .then(() => {
         fetchProjects();
         setEditProjectData(null);

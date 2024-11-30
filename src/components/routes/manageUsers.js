@@ -19,6 +19,7 @@ function ManageUsers() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
   const userRole = user.role;
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
 
   useEffect(() => {
     if (userRole !== 'ADMIN') {
@@ -31,7 +32,7 @@ function ManageUsers() {
 
   const fetchUsers = () => {
     axios
-      .get('http://localhost:4000/api/users')
+      .get(`${API_URL}/api/users`)
       .then((response) => {
         setUsers(response.data);
       })
@@ -51,7 +52,7 @@ function ManageUsers() {
     e.preventDefault();
 
     axios
-      .post('http://localhost:4000/api/users/register', newUserData)
+      .post(`${API_URL}/api/users/register`, newUserData)
       .then(() => {
         fetchUsers();
         setNewUserData({
@@ -74,7 +75,7 @@ function ManageUsers() {
 
   const confirmDeleteUser = () => {
     axios
-      .delete(`http://localhost:4000/api/users/${userToDelete}`)
+      .delete(`${API_URL}/api/users/${userToDelete}`)
       .then(() => {
         fetchUsers();
         setUserToDelete(null);
@@ -103,7 +104,7 @@ function ManageUsers() {
     e.preventDefault();
 
     axios
-      .put(`http://localhost:4000/api/users/${editUserData.user_id}`, editUserData)
+      .put(`${API_URL}/api/users/${editUserData.user_id}`, editUserData)
       .then(() => {
         fetchUsers();
         setEditUserData(null);

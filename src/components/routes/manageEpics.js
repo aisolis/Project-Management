@@ -18,6 +18,7 @@ function ManageEpics() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
   const userRole = user.role;
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
 
   useEffect(() => {
     if (userRole !== 'ADMIN') {
@@ -27,11 +28,11 @@ function ManageEpics() {
       fetchEpics();
       fetchProjects();
     }
-  }, [userRole, navigate]);
+  }, [userRole, navigate, API_URL]);
 
   const fetchEpics = () => {
     axios
-      .get('http://localhost:4000/api/epics')
+      .get(`${API_URL}/api/epics`)
       .then((response) => {
         setEpics(response.data);
       })
@@ -42,7 +43,7 @@ function ManageEpics() {
 
   const fetchProjects = () => {
     axios
-      .get('http://localhost:4000/api/projects')
+      .get(`${API_URL}/api/projects`)
       .then((response) => {
         setProjects(response.data);
       })
@@ -62,7 +63,7 @@ function ManageEpics() {
     e.preventDefault();
 
     axios
-      .post(`http://localhost:4000/api/epics/project/${newEpicData.project_id}`, {
+      .post(`${API_URL}/api/epics/project/${newEpicData.project_id}`, {
         epic_name: newEpicData.epic_name,
         epic_description: newEpicData.epic_description,
       })
@@ -86,7 +87,7 @@ function ManageEpics() {
 
   const confirmDeleteEpic = () => {
     axios
-      .delete(`http://localhost:4000/api/epics/${epicToDelete}`)
+      .delete(`${API_URL}/api/epics/${epicToDelete}`)
       .then(() => {
         fetchEpics();
         setEpicToDelete(null);
@@ -115,7 +116,7 @@ function ManageEpics() {
     e.preventDefault();
 
     axios
-      .put(`http://localhost:4000/api/epics/${editEpicData.epic_id}`, editEpicData)
+      .put(`${API_URL}/api/epics/${editEpicData.epic_id}`, editEpicData)
       .then(() => {
         fetchEpics();
         setEditEpicData(null);

@@ -8,11 +8,13 @@ function Dashboard() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem('user'));
   const userRole = user.role;
+  const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+
 
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/api/projects');
+        const response = await axios.get(`${API_URL}/api/projects'`);
         setProjects(response.data);
       } catch (error) {
         console.error('Error al obtener los proyectos', error);
@@ -30,7 +32,7 @@ function Dashboard() {
 
     fetchProjects();
     fetchTasks();
-  }, []);
+  }, [API_URL]);
 
   const handleLogout = () => {
     localStorage.removeItem('user');

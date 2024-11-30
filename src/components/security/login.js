@@ -11,6 +11,8 @@ function Login() {
     });
 
     const [message, setMessage] = useState('');
+    const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:4000';
+
 
     // Maneja los cambios en los campos del formulario
     const handleChange = (e) => {
@@ -26,7 +28,7 @@ function Login() {
 
         try {
             // Realiza la solicitud POST al endpoint de autenticación
-            const response = await axios.post('http://localhost:4000/api/auth/login', formData);
+            const response = await axios.post(`${API_URL}/api/auth/login`, formData);
 
             // Maneja la respuesta exitosa
             setMessage(response.data.message);
